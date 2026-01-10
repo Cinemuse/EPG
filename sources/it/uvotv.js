@@ -30,7 +30,8 @@ export default async function fetchEPG(channels) {
             await fetch(`https://uvotv.com/api/web/live-channels/programmes`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
                 },
                 body: JSON.stringify({
                     channelEpgIds: [channels[channel]],
