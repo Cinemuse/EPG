@@ -2,27 +2,34 @@ name: Genera EPG
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [main]
   schedule:
     - cron: "0 */4 * * *"
 
 jobs:
-  generate:
+  generate-and-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
+
+      - name: Sync with Upstream
+        run: |
+          git remote add upstream https://github.com/zapprtv/epg.git
+          git fetch upstream
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          # Merges upstream changes into the runner session
+          git merge upstream/main --no-edit || echo "Already up to date"
+
       - name: Installa Bun
         uses: oven-sh/setup-bun@v2
 
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: Genera EPG
-        shell: bash
-        working-directory: ./
         run: |
           bun install
           bun generate.mjs
